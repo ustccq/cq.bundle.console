@@ -49,7 +49,6 @@ public class Activator implements CommandProvider, BundleActivator {
 		System.out.println("Goodbye World in Console!!");
 	}
 
-	@Override
 	public String getHelp() {
 		// TODO Auto-generated method stub
 		return "\tsay – say what you input\n";  

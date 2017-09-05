@@ -24,6 +24,7 @@
             <Export-Package>cq.bundle.console</Export-Package>
             <Bundle-Activator>cq.bundle.console.Activator</Bundle-Activator>
             <Embed-Dependency>*;scope=compile|runtime</Embed-Dependency>
+            <bundleVendor>andrew.chen</bundleVendor>
           </instructions>
         </configuration>
       </plugin>    <!-- (2) END -->

@@ -6,6 +6,12 @@ Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: cq.bundle.console.Activator
 Bundle-Vendor: cls
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-ClassPath: lib/dom4j-2.0.1.jar,
+ lib/poi-3.14.jar,
+ lib/poi-ooxml-3.14.jar,
+ lib/poi-ooxml-schemas-3.14.jar,
+ lib/xmlbeans-2.6.0.jar,
+ .
 Import-Package: com.meowlomo.ci.ems.bundle.interfaces;version="0.1.0",
  org.eclipse.osgi.framework.console,
  org.json;version="20170516.0.0",

@@ -62,8 +62,11 @@ public class Activator implements CommandProvider, BundleActivator {
 		 else{
 			IWebDriver iwb = (IWebDriver)context.getService(serviceRef);
 			
-			File repoFile = new File("D:\\workspace\\eclipse\\jsonProducer\\repo.xml");
-			File excelFile = new File("D:\\testcase.xlsm");
+//			File repoFile = new File("D:\\workspace\\eclipse\\jsonProducer\\repo.xml");
+//			File excelFile = new File("D:\\testcase.xlsm");
+			
+			File repoFile = new File("F:\\_testcase\\repo.xml");
+			File excelFile = new File("F:\\_testcase\\testcase.xlsm");
 			System.out.println(excelFile.exists());
 			
 			JSONArray excelContent = null;

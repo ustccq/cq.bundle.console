@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+	<properties>
+	</properties>
+	<projects>
+		<project name='MeowlomoStore'>
+			<applications>
+				<application name='Store'>
+					<sections>
+						<section name="MSMain">
+							<element name='Account' type='link' locator-type='xpath' locator-value='.//*[@id=&apos;accountLink&apos;]/a'/>
+						</section>
+						<section name="Register">
+							<element name='Email' type='textbox' locator-type='id' locator-value='registerUserName'/>
+							<element name='password' type='textbox' locator-type='id' locator-value='registerDecryptedPassword'/>
+							<element name='RePassword' type='textbox' locator-type='id' locator-value='registerConfirmPassword' />
+							<element name='RegisterBtn' type='button' locator-type='xpath' locator-value='.//*[@id=&apos;registerButton&apos;]/input'/>								
+						</section>
+						<section name="AccountAddress">
+							<element name='FirstName' type='textbox' locator-type='id' locator-value='billingFirstName'/>
+							<element name='LastName' type='textbox' locator-type='id' locator-value='billingLastName'/>
+							<element name='Organization' type='textbox' locator-type='id' locator-value='billingOrganization'/>
+							<element name='Address1' type='textbox' locator-type='id' locator-value='billingAddress1'/>
+							<element name='Address2' type='textbox' locator-type='id' locator-value='billingAddress2'/>
+							<element name='City' type='textbox' locator-type='id' locator-value='billingCity'/>
+							<element name='State' type='dropdown' locator-type='id' locator-value='billingState'/>
+							<element name='Other' type='textbox' locator-type='id' locator-value='billingOther'/>
+							<element name='PostalCode' type='textbox' locator-type='id' locator-value='billingPostalCode'/>
+							<element name='Country' type='dropdown' locator-type='id' locator-value='billingCountry'/>
+							<element name='DaytimePhone' type='textbox' locator-type='id' locator-value='billingPhone1'/>
+							<element name='Email' type='textbox' locator-type='id' locator-value='billingEmail1'/>
+							<element name='AddAddressBtn' type='button' locator-type='id' locator-value='addressesFormBillingButton'/>
+						</section>
+					</sections>
+				</application>
+			</applications>
+		</project>
+	</projects>
+</root>

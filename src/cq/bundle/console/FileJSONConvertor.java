@@ -99,6 +99,47 @@ public class FileJSONConvertor {
 		return sheet;
 	}
 	
+public static JSONObject tableRepo2JSON(File repoFile){
+		
+		Map<String,Map<String,String>> repoMap = new HashMap<String,Map<String,String>>();
+		try {
+			SAXReader reader = new SAXReader();
+			URL url = repoFile.toURI().toURL();
+
+			Document doc = reader.read(url);
+	        Iterator<Element> projects = doc.getRootElement().element("projects").elementIterator("project");
+			 while(projects.hasNext()){
+				 Element project = projects.next();
+				 String projectName = project.attributeValue("name");
+				 Iterator<Element> applications = project.element("applications").elementIterator("application");
+				 while(applications.hasNext()){
+					 Element application = applications.next();
+					 String applicationName = application.attributeValue("name");
+					 Iterator<Element> sections = application.element("sections").elementIterator("section");
+					 while(sections.hasNext()){
+						 Element section = sections.next();
+						 String sectionName = section.attributeValue("name");
+						 //the key ends to the section. the value is the content under the key
+						 Iterator<Element> elements = section.elementIterator();
+						 while(elements.hasNext()){
+							 Element element = elements.next();
+							 Map<String,String> elementContentMap = new HashMap<String,String>();
+							 String elementName = element.attributeValue("name");
+							 String key = (projectName+"."+applicationName+"."+sectionName+"."+elementName).toLowerCase();
+							 elementContentMap.putAll(processElementMap("", element));
+							 repoMap.put(key, elementContentMap);
+						 }						 
+					 }
+				 }
+			 }
+			
+		} catch (DocumentException | MalformedURLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return new JSONObject(repoMap);
+	}
+	
 	public static JSONObject repo2JSON(File repoFile){
 		
 		Map<String,Map<String,String>> repoMap = new HashMap<String,Map<String,String>>();

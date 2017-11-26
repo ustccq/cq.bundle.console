@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE databases [
+  <!ELEMENT databases (database+)>
+  <!ELEMENT database (name,data_source_class_name,url,username,password,max_pool_size,connection_timeout,idle_timeout,max_life_time,auto_commit,pool_name)>
+  <!ELEMENT name					(#PCDATA)>
+  <!ELEMENT data_source_class_name	(#PCDATA)>
+  <!ELEMENT url						(#PCDATA)>
+  <!ELEMENT username				(#PCDATA)>
+  <!ELEMENT password				(#PCDATA)>
+  <!ELEMENT max_pool_size			(#PCDATA)>
+  <!ELEMENT connection_timeout		(#PCDATA)>
+  <!ELEMENT idle_timeout			(#PCDATA)>
+  <!ELEMENT max_life_time			(#PCDATA)>
+  <!ELEMENT auto_commit				(#PCDATA)>
+  <!ELEMENT pool_name				(#PCDATA)>
+]>
+
+<databases>
+	<database>
+		<name>oracleAoTain</name>
+		<data_source_class_name>oracle.jdbc.pool.OracleDataSource</data_source_class_name>
+		<url>jdbc:oracle:thin:@192.168.21.191:1521/bsmp</url>
+		<username>push_platform</username>
+		<password>push_platform123</password>
+		<max_pool_size>50</max_pool_size>
+		<connection_timeout>30000</connection_timeout>
+		<idle_timeout>600000</idle_timeout>
+		<max_life_time>1800000</max_life_time>
+		<auto_commit>true</auto_commit>
+		<pool_name>temOracleAoTain</pool_name>
+	</database>
+	<database>
+		<name>oracle1</name>
+		<data_source_class_name>oracle.jdbc.pool.OracleDataSource</data_source_class_name> 
+		<url>jdbc:oracle:thin:@10.0.20.70:1521/testdb</url>
+		<username>testadmin</username>
+		<password>P@rty888</password>
+		<max_pool_size>50</max_pool_size>
+		<connection_timeout>30000</connection_timeout>
+		<idle_timeout>600000</idle_timeout>
+		<max_life_time>1800000</max_life_time>
+		<auto_commit>true</auto_commit>
+		<pool_name>temOracle</pool_name>
+	</database>
+	<!-- <database>
+		<name>mysql1</name>
+		<data_source_class_name>com.mysql.jdbc.jdbc2.optional.MysqlDataSource</data_source_class_name> 
+		<url>jdbc:mysql://115.159.218.165:33061/bundle?characterEncoding=UTF-8</url>
+		<username>ustccq</username>
+		<password>123456qwertg</password>
+		<max_pool_size>10</max_pool_size>
+		<connection_timeout>60000</connection_timeout>
+		<idle_timeout>600000</idle_timeout>
+		<max_life_time>1800000</max_life_time>
+		<auto_commit>true</auto_commit>
+		<pool_name>temMysql1</pool_name>
+	</database>
+	<database>
+		<name>postgresql1</name>
+		<data_source_class_name>org.postgresql.ds.PGSimpleDataSource</data_source_class_name>
+		<url>jdbc:postgresql://pgl01.meowlomo.com:5432/testdb</url>
+		<username>testadmin</username>
+		<password>P@rty888</password>
+		<max_pool_size>10</max_pool_size>
+		<connection_timeout>60000</connection_timeout>
+		<idle_timeout>600000</idle_timeout>
+		<max_life_time>1800000</max_life_time>
+		<auto_commit>true</auto_commit>
+		<pool_name>temPostgreSQL</pool_name>
+	</database>
+	<database>
+		<name>sqlserver1</name>
+		<data_source_class_name>com.microsoft.sqlserver.jdbc.SQLServerDataSource</data_source_class_name>
+		<url>jdbc:sqlserver://10.0.20.33:1433;DatabaseName=testdb</url>
+		<username>tester</username>
+		<password>testing123</password>
+		<max_pool_size>10</max_pool_size>
+		<connection_timeout>60000</connection_timeout>
+		<idle_timeout>600000</idle_timeout>
+		<max_life_time>1800000</max_life_time>
+		<auto_commit>true</auto_commit>
+		<pool_name>temSqlServer</pool_name>
+	</database> -->
+</databases>

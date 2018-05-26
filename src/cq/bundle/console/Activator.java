@@ -19,6 +19,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Dictionary;
 import java.util.Hashtable;
+import java.util.UUID;
 
 import javax.sql.DataSource;
 
@@ -60,7 +61,10 @@ import org.slf4j.LoggerFactory;
 import com.meowlomo.ci.ems.bundle.interfaces.BaseBundleActivator;
 import com.meowlomo.ci.ems.bundle.interfaces.IDataSource;
 import com.meowlomo.ci.ems.bundle.interfaces.IHttpUtil;
+import com.meowlomo.ci.ems.bundle.interfaces.ISchemaValidator;
+import com.meowlomo.ci.ems.bundle.interfaces.ISchemaValidator.ValidateResult;
 import com.meowlomo.ci.ems.bundle.interfaces.IWebDriver;
+import com.meowlomo.ci.ems.bundle.interfaces.IHttpUtil.CompositeRequestResult;
 import com.meowlomo.ci.ems.bundle.interfaces.IHttpUtil.MethodType;
 import com.meowlomo.ci.ems.bundle.utils.StringUtil;
 
@@ -104,7 +108,7 @@ public class Activator extends BaseBundleActivator implements CommandProvider {
 		return "\tsay – say what you input\n";
 	}
 
-	private static String readerJson(String filePath) throws IOException {
+	private static String readFileContent(String filePath) throws IOException {
 		// 对一串字符进行操作
 		StringBuffer fileData = new StringBuffer();
 		//
@@ -217,11 +221,12 @@ public class Activator extends BaseBundleActivator implements CommandProvider {
 		if (bUseInnerJSONString) {
 
 			try {
-				jsonTask = readerJson("D:\\commandToBundle.txt");
+				jsonTask = readFileContent("D:\\commandToBundle.txt");
 				JSONObject tmp = new JSONObject(jsonTask);
-				logger.info(tmp.getBoolean("standSingleton") ? "OK" : "false");
-				tmp.put("standSingleton", "false");
-				logger.info(tmp.getBoolean("standSingleton") ? "OK" : "false");
+//				logger.info(tmp.getBoolean("standSingleton") ? "OK" : "false");
+//				tmp.put("standSingleton", "true");
+//				logger.info(tmp.getBoolean("standSingleton") ? "OK" : "false");
+				tmp.put("geckodriverPath", System.getProperty("user.home") + "\\Desktop\\geckodriver-windows-64.exe");//TODO
 				jsonTask = tmp.toString();
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
@@ -270,9 +275,9 @@ public class Activator extends BaseBundleActivator implements CommandProvider {
 			JSONObject xml = FileJSONConvertor.repo2JSON(repoFile);
 			xml.put("tables", FileJSONConvertor.repoTablePart2JSON(repoFile));
 
-			jsonParams.put("repositoryXML", xml);
+			jsonParams.put("elementMap", xml);
 			jsonParams.put("logFolder", "C:\\Users\\meteor\\Desktop\\bundle_log");
-			jsonParams.put("workbook", excelContent);
+			jsonParams.put("instructionArray", excelContent);
 			jsonTask = jsonParams.toString();
 			JSONArray inString = excelContent.getJSONArray("Instructions");
 			String insss = inString.toString();
@@ -285,12 +290,37 @@ public class Activator extends BaseBundleActivator implements CommandProvider {
 			Event reportGeneratedEvent = new Event("com/meowlomo/bundle/webdriver/dotest", msg);
 			eventAdmin.postEvent(reportGeneratedEvent);
 		} else {
-			boolean bTestResult = iwb.doTestProcess(jsonTask);
+			Integer bTestResult = iwb.doTestProcess(jsonTask);
 			System.out.println(bTestResult);
 		}
 	}
 
 	public void _t(CommandInterpreter ci) {
+		
+		Activator.getBundleActivator("com.meowlomo.ci.ems.bundle.interfaces.ISchemaValidator");
+		BaseBundleActivator bba = Activator.getBundleActivator("com.meowlomo.ci.ems.bundle.curl");
+
+		if (null != bba) {
+			try {
+				ISchemaValidator schemaValidator = bba.getServiceObject(ISchemaValidator.class);
+				
+				String json = readFileContent("D://fstab-good.json");
+				String schema = readFileContent("D://fstab.json");
+				ValidateResult vr = schemaValidator.validateJSONSchema(json, schema);
+//				ValidateResult vr = ValidateResult.fromString(vrStr);
+				System.out.println(vr);
+			} catch (InstantiationException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IllegalAccessException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
 		// System.out.println(InstructionUtils.converMultiFuncInput("${specialsymbol.randomwfewfewfw}"));
 		// System.out.println(InstructionUtils.converMultiFuncInput("${specialsymbol.random(5)}---${specialsymbol.random(5)}---"));
 		// System.out.println(InstructionUtils.converMultiFuncInput("${letterlowercase.random(5)}---${lettercapital.random(5)}---"
@@ -336,6 +366,73 @@ public class Activator extends BaseBundleActivator implements CommandProvider {
 		}
 	}
 
+	public void _geek(CommandInterpreter ci) {
+		String command = ci.nextArgument();
+		ServiceReference<?> serviceRef = _context.getServiceReference(IHttpUtil.class.getName());
+		if (null == serviceRef)
+			System.out.println("null http util object");
+		else {
+			IHttpUtil iHu = (IHttpUtil) _context.getService(serviceRef);
+			
+			JSONObject paramsHeadersObj = new JSONObject();
+			paramsHeadersObj.put("Cache-Control", "no-cache");
+			paramsHeadersObj.put("User-Agent", "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko)");
+			paramsHeadersObj.put("Accept-Language", "zh-CN,zh;q=0.8,en-US;q=0.5,en;q=0.3");
+			JSONArray paramsHeader = new JSONArray();
+			paramsHeader.put(paramsHeadersObj);
+
+			JSONObject paramsBody = new JSONObject();
+			JSONArray paramsBodyArray = new JSONArray();
+	
+			if (command.equalsIgnoreCase("get")){
+				paramsBody.put("ids", "1,2,3,4");
+				paramsBodyArray.put(paramsBody);
+				System.out.println(paramsBodyArray.toString());
+				
+				String url = "http://10.0.100.211:8080/api/cq?ids=1,2,3,4";
+				String result = iHu.request(url, "", IHttpUtil.MethodType.GET);System.out.println(result);
+//			    String result2 = iHu.requestHeader(url, paramsHeadersObj.toString(), paramsBodyArray.toString(), IHttpUtil.MethodType.GET);System.out.println(result2);
+			}else if (command.equalsIgnoreCase("post")){
+				paramsHeadersObj.put("Content-Type", "application/json");
+				
+				paramsBodyArray.put(UUID.randomUUID().toString());
+				paramsBodyArray.put(UUID.randomUUID().toString());
+				System.out.println(paramsBodyArray.toString());
+				String url = "http://10.0.100.211:8080/api/cq/1/tasks";
+				System.out.println(paramsHeadersObj.toString());
+				CompositeRequestResult result2 = iHu.requestHeader(url, "{\"Content-Type\":\"application/json\"}", paramsBodyArray.toString(), IHttpUtil.MethodType.POST);
+//				CompositeRequestResult result2 = CompositeRequestResult.fromString(result2Str);
+				System.out.println(result2);
+				
+			}else if (command.equalsIgnoreCase("getcookie")){		
+				String url = "http://atm-mid.oo/api/test/amOK";
+				CompositeRequestResult result = iHu.requestHeader(url, "{}", "", IHttpUtil.MethodType.GET);
+//				CompositeRequestResult result = CompositeRequestResult.fromString(resultStr);
+				System.out.println(result);
+//			    String result2 = iHu.requestHeader(url, paramsHeadersObj.toString(), paramsBodyArray.toString(), IHttpUtil.MethodType.GET);System.out.println(result2);
+			}else if (command.equalsIgnoreCase("img")){
+				String url = "https://cn.bing.com/az/hprichbg/rb/XmasTreeRoad_ZH-CN11556502034_1920x1080.jpg";
+				CompositeRequestResult result = iHu.requestHeader(url, "{}", "", IHttpUtil.MethodType.GET);
+//				CompositeRequestResult result = CompositeRequestResult.fromString(resultStr);
+				System.out.println(result);
+				
+			}else if (command.equalsIgnoreCase("bd")){
+				JSONArray codesArr = new JSONArray();
+				codesArr.put(2013);
+				codesArr.put("3410");
+				
+				System.out.println(String.format("%s is array", codesArr));
+				System.out.println(String.join(",", codesArr.toList().toArray(new String[0])));
+				
+				String url = "http://www.baidu.com";
+				CompositeRequestResult result = iHu.requestHeader(url, paramsHeadersObj.toString(), "", IHttpUtil.MethodType.GET);
+//				CompositeRequestResult result = CompositeRequestResult.fromString(resultStr);
+				System.out.println(result);
+				System.out.println(result.contentHeader);
+			}
+		}
+	}
+	
 	public void _go(CommandInterpreter ci) {
 		// String command = ci.nextArgument();
 		ServiceReference<?> serviceRef = _context.getServiceReference(IWebDriver.class.getName());
@@ -448,19 +545,19 @@ public class Activator extends BaseBundleActivator implements CommandProvider {
 			ds = getServiceObject(IDataSource.class);
 
 			String sql = "";
-			if (0 == dbName.compareToIgnoreCase("mysql1"))// "tencent_vps_mysql";
+			if (dbName.equalsIgnoreCase("mysql1"))// "tencent_vps_mysql";
 				sql = "select count(1) as rows from bundle.logging_event;";
-			else if (0 == dbName.compareToIgnoreCase("postgresql1"))
+			else if (dbName.equalsIgnoreCase("postgresql1"))
 				sql = "select count(1) as totalemployee, sum(salary) as rows from cqtest;";
-			// else if (0 == dbName.compareToIgnoreCase("oracle1"))
+			// else if (dbName.equalsIgnoreCase("oracle1"))
 			// sql = "SELECT COUNT(ARCHITECTURE) AS rows FROM TEM_WORKERS";
-			else if (0 == dbName.compareToIgnoreCase("sqlserver1"))
+			else if (dbName.equalsIgnoreCase("sqlserver1"))
 				sql = "select count(distinct(LastName)) as rows from testdb.dbo.Persons;";
-			else if (0 == dbName.compareToIgnoreCase("oracleAoTain"))
+			else if (dbName.equalsIgnoreCase("oracleAoTain"))
 				// sql = "insert into DAMS_AT_TTSS (name,address,code)
 				// values('andrew', '深圳', 1234)";
 				sql = "insert all into PUSH_PLATFORM.DOWN_ICP_HCJG_JRHC (WZID,WZBAXH,YM,JXIP,BBISP,HCJG,HCSJ,JRID,ISPID,REMARK,DEAL_FLAG,STATUS,DEAL_TIME,DEAL_REMARK,SHENGID,SHIID,DEAL_USERID) values (2001,'meowlomo_JRHC8','www.meowlomo.com',3232260090,1060,1,'2017-10-26 14:30:30',1008,1060,'meowlomoTest',1,3,to_date('26-11月-17','DD-MON-RR'),'批量未处理',440000,445200,892) into PUSH_PLATFORM.DOWN_ICP_HCJG_JRHC (WZID,WZBAXH,YM,JXIP,BBISP,HCJG,HCSJ,JRID,ISPID,REMARK,DEAL_FLAG,STATUS,DEAL_TIME,DEAL_REMARK,SHENGID,SHIID,DEAL_USERID) values (2002,'meowlomo_JRHC8','www.meowlomo.com   ',3232260090,1060,1,'2017-10-26 14:30:30',1008,1060,'meowlomoTest',1,3,to_date('26-11月-17','DD-MON-RR'),'批量未处理',440000,445200,892) into PUSH_PLATFORM.DOWN_ICP_HCJG_JRHC (WZID,WZBAXH,YM,JXIP,BBISP,HCJG,HCSJ,JRID,ISPID,REMARK,DEAL_FLAG,STATUS,DEAL_TIME,DEAL_REMARK,SHENGID,SHIID,DEAL_USERID) values (2003,'meowlomo_JRHC8','www.meowlomo.com   ',3232260090,1060,1,'2017-10-26 14:30:30',1008,1060,'meowlomoTest',2,3,to_date('26-11月-17','DD-MON-RR'),'批量未处理',440000,445200,892) into PUSH_PLATFORM.DOWN_ICP_HCJG_JRHC (WZID,WZBAXH,YM,JXIP,BBISP,HCJG,HCSJ,JRID,ISPID,REMARK,DEAL_FLAG,STATUS,DEAL_TIME,DEAL_REMARK,SHENGID,SHIID,DEAL_USERID) values (2003,'meowlomo_JRHC8','www.meowlomo.com   ',3232260090,1060,1,'2017-10-26 14:30:30',1008,1060,'meowlomoTest',2,3,to_date('26-11月-17','DD-MON-RR'),'批量未处理',440000,445200,892) select 1 from dual";
-			else if (0 == dbName.compareToIgnoreCase("oracle1"))
+			else if (dbName.equalsIgnoreCase("oracle1"))
 				sql = String.format("Insert into AT_TEST (name,address,code) values ('andrew', '深圳', %d)",
 						System.currentTimeMillis());
 			if (sql.isEmpty()) {

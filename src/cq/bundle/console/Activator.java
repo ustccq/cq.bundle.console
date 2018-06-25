@@ -226,7 +226,7 @@ public class Activator extends BaseBundleActivator implements CommandProvider {
 //				logger.info(tmp.getBoolean("standSingleton") ? "OK" : "false");
 //				tmp.put("standSingleton", "true");
 //				logger.info(tmp.getBoolean("standSingleton") ? "OK" : "false");
-				tmp.put("geckodriverPath", System.getProperty("user.home") + "\\Desktop\\geckodriver-windows-64.exe");//TODO
+//				tmp.put("geckodriverPath", System.getProperty("user.home") + "\\Desktop\\geckodriver-windows-64.exe");//TODO
 				jsonTask = tmp.toString();
 			} catch (IOException e) {
 				// TODO Auto-generated catch block

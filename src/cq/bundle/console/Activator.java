@@ -299,7 +299,9 @@ public class Activator extends BaseBundleActivator implements CommandProvider {
 		
 		Activator.getBundleActivator("com.meowlomo.ci.ems.bundle.interfaces.ISchemaValidator");
 		BaseBundleActivator bba = Activator.getBundleActivator("com.meowlomo.ci.ems.bundle.curl");
-
+		if (null == bba){
+			bba = Activator.getBundleActivator("com.meowlomo.ci.ems.bundle.httpclient");
+		}
 		if (null != bba) {
 			try {
 				ISchemaValidator schemaValidator = bba.getServiceObject(ISchemaValidator.class);
@@ -340,6 +342,9 @@ public class Activator extends BaseBundleActivator implements CommandProvider {
 		if (null == http) {
 			try {
 				BaseBundleActivator bba = Activator.getBundleActivator("com.meowlomo.ci.ems.bundle.curl");
+				if (null == bba){
+					bba = Activator.getBundleActivator("com.meowlomo.ci.ems.bundle.httpclient");
+				}
 				// TODO
 				if (null != bba) {
 					http = bba.getServiceObject(IHttpUtil.class);
